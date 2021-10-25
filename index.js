@@ -106,7 +106,7 @@ app.post('/api/login', async(req, res)=>{
  *      parameters:
  *            - in: body
  *              name: username
- *              description: Login user
+ *              description: Register user
  *              schema:
  *                  type: object
  *                  required:
@@ -188,6 +188,7 @@ const authenticateJWT = (req, res, next) => {
  *      type: apiKey
  *      name: Authorization
  *      in: header
+ *      bearerFormat: JWT
  * /api/sesiones:
  *  post:
  *      security:
@@ -196,7 +197,7 @@ const authenticateJWT = (req, res, next) => {
  *      parameters:
  *            - in: body
  *              name: username
- *              description: Login user
+ *              description: Sesiones Create
  *              schema:
  *                  type: object
  *                  required:
@@ -229,6 +230,48 @@ app.post('/api/sesiones', authenticateJWT, async (req, res) => {
     console.log(response);
 });
 
+
+
+/**
+ * @swagger
+ * securityDefinitions:
+ *  Bearer:
+ *      type: apiKey
+ *      name: Authorization
+ *      in: header
+ *      bearerFormat: JWT
+ * /api/grupos:
+ *  post:
+ *      security:
+ *           - Bearer: []
+ *      description: Sessions endpoint
+ *      parameters:
+ *            - in: body
+ *              name: username
+ *              description: Grupos create
+ *              schema:
+ *                  type: object
+ *                  required:
+ *                      -username
+ *                      -token
+ *                  properties:
+ *                      username:
+ *                          type: string
+ *                      titulo:
+ *                          type: string
+ *                      usuarios:
+ *                          type: Array
+ * 
+ * 
+ *      responses:
+ *          200:
+ *              description: register sucess
+ *          400:
+ *              description: bad data request
+ * 
+ *
+ *  
+ */
 app.post('/api/grupos', authenticateJWT, async (req, res) => {
     const { username, titulo, fecha, usuarios } = req.body;
     const response  = await Grupo.create({
@@ -257,8 +300,8 @@ app.post('/api/mensaje',authenticateJWT, async(req,res)=>{
             {titulo},
             {messages}
         );
-        const messages = {title: gp.titulo,mess: gp.messages}
-        res.send(messages);
+        const messagess = {title: gp.titulo,mess: gp.messages}
+        res.send(messagess);
     }
     catch(err){
         res.send(err);
