@@ -238,8 +238,32 @@ app.post('/api/grupos', authenticateJWT, async (req, res) => {
         usuarios
     })
     res.send(`http://localhost:${port}/${titulo}`);
-    console.log(response);
+    console.log(response.username,
+        response.titulo,
+        response.fecha,
+        response.usuarios);
 });
+
+app.post('/api/mensaje',authenticateJWT, async(req,res)=>{
+    const mess = req.body.message;
+    const user = req.user;
+    let newMsg = {mess, user}
+    try{
+        let messages = await Grupos.findOne({ titulo: t });
+        messages = messages.messages
+        let pMsg = messages.titulo
+        pMsg.push(newMsg);
+        const gp = await Grupos.updateOne(
+            {titulo},
+            {messages}
+        );
+        const messages = {title: gp.titulo,mess: gp.messages}
+        res.send(messages);
+    }
+    catch(err){
+        res.send(err);
+    }
+})
 
 
 const swaggerDocs = swaggerJsDoc(SwaggerOptions);
